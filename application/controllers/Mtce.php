@@ -4,6 +4,9 @@ class Mtce extends Application {
 
         public function index()
         {
+                $this->data['pagetitle'] = 'TODO List Maintenance';
+                $tasks = $this->tasks->all(); // get all the tasks
+
                 // substitute the status name
                 foreach ($tasks as $task)
                         if (!empty($task->status))
@@ -18,6 +21,9 @@ class Mtce extends Application {
                 $this->data['display_tasks'] = $result;
                 $this->data['pagebody'] = 'itemlist';
                 $this->render();
+
+
+                
                 
         }
 
