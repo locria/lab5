@@ -15,8 +15,8 @@ class Views extends Application
     }
 	
 	function makePrioritizedPanel($tasks) {
-    $parms = ['display_tasks' => $this->tasks->getPrioritizedTasks()];
-    return $this->parser->parse('by_priority',$parms,true);
+		$parms = ['display_tasks' => $this->tasks->getPrioritizedTasks()];
+		return $this->parser->parse('by_priority',$parms,true);
 	}
 	
 	function makeCategorizedPanel($tasks)
