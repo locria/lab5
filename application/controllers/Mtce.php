@@ -11,7 +11,9 @@ class Mtce extends Application {
 
         private function show_page($tasks)
         {
-                $this->data['pagetitle'] = 'TODO List Maintenance';
+                $role = $this->session->userdata('userrole');
+                $this->data['pagetitle'] = 'TODO List Maintenance ('. $role . ')';
+
                 // build the task presentation output
                 $result = ''; // start with an empty array      
                 foreach ($tasks as $task)
@@ -23,6 +25,9 @@ class Mtce extends Application {
                 $this->data['display_tasks'] = $result;
             
                 // and then pass them on
+
+                
+
                 $this->data['pagebody'] = 'itemlist';
                 $this->render();
         }
