@@ -16,6 +16,8 @@ class Views extends Application
 	
 	function makePrioritizedPanel($tasks) {
 		$parms = ['display_tasks' => $this->tasks->getPrioritizedTasks()];
+		$role = $this->session->userdata('userrole');
+		$parms['completer'] = ($role == ROLE_OWNER) ? '/views/complete' : '#';
 		return $this->parser->parse('by_priority',$parms,true);
 	}
 	
@@ -23,5 +25,24 @@ class Views extends Application
 	{
 		$parms = ['display_tasks' => $this->tasks->getCategorizedTasks()];
 		return $this->parser->parse('by_category', $parms, true);
+	}
+
+	function complete()
+	{
+		$role = $this->session->userdata('userrole');
+		if ($role != ROLE_OWNER) redirect('/views');
+
+        // loop over the post fields, looking for flagged tasks
+		foreach($this->input->post() as $key=>$value)
+		{
+			if (substr($key,0,4) == 'task')
+			{
+				$taskid = substr($key,4);
+				$task = $this->tasks->get($taskid);
+				$task->status = 2; // complete
+				$this->tasks->update($task);
+            }
+        }
+        $this->index();
 	}
 }
