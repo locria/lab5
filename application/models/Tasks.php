@@ -2,33 +2,10 @@
 
 class Tasks extends CSV_Model {
 
-        public function __construct()
-        {
-                parent::__construct(APPPATH . '../data/tasks.csv', 'id');
-        }
-
-	function getPrioritizedTasks()
-	{
-		// extract the undone tasks
-		foreach ($this->all() as $task)
-		{
-			if ($task->status != 2)
-				$undone[] = $task;
-		}
-
-		// substitute the priority name
-		foreach ($undone as $task)
-			$task->priority = $this->app->priority($task->priority);
-
-		// order them by priority
-		usort($undone, "orderByPriority");
-
-		// convert the array of task objects into an array of associative objects       
-		foreach ($undone as $task)
-			$converted[] = (array) $task;
-
-		return $converted;
-	}
+    public function __construct()
+    {
+	    parent::__construct(APPPATH . '../data/tasks.csv', 'id');
+    }
 		
 	function getCategorizedTasks()
 	{
@@ -41,8 +18,13 @@ class Tasks extends CSV_Model {
 
 		// substitute the category name, for sorting
 		foreach ($undone as $task)
-			$task->group = $this->app->group($task->group);
-
+		{
+			if (!empty($this->app))
+			{
+				$task->group = $this->app->group($task->group);
+			}
+		}
+			
 		// order them by category
 		usort($undone, "orderByCategory");
 
@@ -53,7 +35,7 @@ class Tasks extends CSV_Model {
 		return $converted;
 	}
 	
-		// provide form validation rules
+	// provide form validation rules
 	public function rules()
 	{
 		$config = array(
@@ -64,6 +46,37 @@ class Tasks extends CSV_Model {
 		);
 		return $config;
 	}
+
+	public function getComplete()
+	{
+		$completed = 0;
+
+		foreach($this->all() as $task)
+		{
+			if ($task->status == 2)
+			{
+				$completed++;
+			}
+		}
+
+		return $completed;
+	}
+
+	public function getIncomplete()
+	{
+		$incomplete = 0;
+
+		foreach($this->all() as $task)
+		{
+			if ($task->status != 2)
+			{
+				$incomplete++;
+			}
+		}
+
+		return $incomplete;
+	}
+
 }
 
 	
