@@ -12,7 +12,7 @@ class Task extends Entity
     {
         if (empty($id))
         {
-            throw new InvalidArgumentException('Empty ID');
+            throw new Exception('Empty ID');
         }
         $this->taskID = $id;
         return $this;
@@ -66,7 +66,7 @@ class Task extends Entity
 
     public function setGroup($group)
     {
-        if ($empty($group))
+        if (empty($group))
         {
             throw new InvalidArgumentException('Empty group.');
         }

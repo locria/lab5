@@ -46,6 +46,37 @@ class Tasks extends CSV_Model {
 		);
 		return $config;
 	}
+
+	public function getComplete()
+	{
+		$completed = 0;
+
+		foreach($this->all() as $task)
+		{
+			if ($task->status == 2)
+			{
+				$completed++;
+			}
+		}
+
+		return $completed;
+	}
+
+	public function getIncomplete()
+	{
+		$incomplete = 0;
+
+		foreach($this->all() as $task)
+		{
+			if ($task->status != 2)
+			{
+				$incomplete++;
+			}
+		}
+
+		return $incomplete;
+	}
+
 }
 
 	
