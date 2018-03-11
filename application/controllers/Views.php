@@ -15,10 +15,35 @@ class Views extends Application
     }
 	
 	function makePrioritizedPanel($tasks) {
-		$parms = ['display_tasks' => $this->tasks->getPrioritizedTasks()];
+		// extract the undone tasks
+		foreach($tasks as $task)
+		{
+			if ($task->status != 2)
+			{
+				$undone[] = $task;
+			}
+		}
+
+		// order them by priority
+		usort($undone, "orderByPriority");
+
+		// substitute the priority name
+		foreach($undone as $task)
+		{
+			$task->priority = $this->app->priority($task->priority);
+		}
+
+		// convert the array of task objects into an array of associative objects
+		foreach ($undone as $task)
+		{
+			$converted[] = (array) $task;
+		}
+
+		// and then pass them on
+		$parms = ['display_tasks' => $converted];
 		$role = $this->session->userdata('userrole');
 		$parms['completer'] = ($role == ROLE_OWNER) ? '/views/complete' : '#';
-		return $this->parser->parse('by_priority',$parms,true);
+		return $this->parser->parse('by_priority', $parms, true);
 	}
 	
 	function makeCategorizedPanel($tasks)
@@ -44,5 +69,16 @@ class Views extends Application
             }
         }
         $this->index();
+	}
+
+	// return -1, 0, or 1 of $a's priority is higher, equal to, or lower than $b's
+	function orderByPriority($a, $b)
+	{
+		if ($a->priority > $b->priority)
+			return -1;
+		elseif ($a->priority < $b->priority)
+			return 1;
+		else
+			return 0;
 	}
 }
